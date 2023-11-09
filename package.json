@@ -1,6 +1,6 @@
 {
   "name": "chookting",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "@egjs/react-infinitegrid": "^4.10.1",
@@ -10,7 +10,6 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.5.1",
     "framer-motion": "^10.16.4",
-    "localtunnel": "^2.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-modal": "^3.16.1",

@@ -2,6 +2,7 @@ import React from "react";
 import ReactModal from "react-modal";
 import theme from "../../../theme";
 import styled from "styled-components";
+import { preventScroll } from "../../../utils/preventScroll";
 
 const overlay = {
   width: "390px",
@@ -89,10 +90,6 @@ const LargeText = styled.span`
 
 const InfoModal = ({ isOpen, onRequestClose }) => {
   ReactModal.setAppElement(document.getElementById("modal"));
-
-  const preventScroll = () => {
-    document.body.style.overflow = "hidden";
-  };
 
   return (
     <ReactModal

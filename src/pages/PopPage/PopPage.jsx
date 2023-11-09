@@ -1,22 +1,28 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import Layout from "../../components/Layout";
-import Container from "./components/Container";
 import Card from "./components/Card";
 import { MasonryInfiniteGrid } from "@egjs/react-infinitegrid";
 import { useMatch, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { styled } from "styled-components";
-import { SkeletonPage } from "../SkeletonPage/SkeletonPage";
 import PopDetailPage from "../PopDetailPage/PopDetailPage";
-import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { fetchPopPosts } from "../../apis/api/post";
+import { CenteredHeart } from "../../components/HeartLoader";
+
+const Container = styled.main`
+  width: 358px;
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+`;
 
 const Overlay = styled(motion.div)`
   position: fixed;
   width: 390px;
   height: 100%;
   background-color: ${(props) => props.theme.modal.dim};
-  opacity: 0;
 `;
 
 const Detail = styled(motion.div)`
@@ -36,26 +42,23 @@ const Detail = styled(motion.div)`
 `;
 
 const PopPage = () => {
+  const bottomObserverRef = useRef(null);
   const navigate = useNavigate();
   const detailMatch = useMatch("/pop/post/:postId");
-  const { data: pop, fetchNextPage } = useInfiniteQuery(
-    ["pop"],
-    fetchPopPosts,
-    {
-      getNextPageParam: (lastPage, allPages) => {
-        return allPages.length;
-      },
-    }
-  );
-  const bottomObserverRef = useRef(null);
-
-  const handleCardClick = (postId) => {
-    navigate(`post/${postId}`);
-  };
-
-  const handleOverlayClick = () => {
-    navigate("/pop");
-  };
+  const {
+    isLoading,
+    data: pop,
+    fetchNextPage,
+    refetch,
+  } = useInfiniteQuery(["pop"], fetchPopPosts, {
+    getNextPageParam: (lastPage, allPages) => {
+      return allPages.length;
+    },
+    onError: (e) => {
+      alert("네트워크 연결이 불안정합니다.");
+      refetch();
+    },
+  });
 
   useEffect(() => {
     const handleObserver = (entries) => {
@@ -77,20 +80,35 @@ const PopPage = () => {
     return () => {
       io.disconnect();
     };
-  }, [bottomObserverRef, fetchNextPage]);
+  }, [bottomObserverRef, fetchNextPage, pop]);
+
+  const handleCardClick = (postId) => {
+    navigate(`post/${postId}`);
+  };
+
+  const handleOverlayClick = () => {
+    navigate("/pop");
+  };
+
+  if (isLoading) {
+    return (
+      <Layout>
+        <CenteredHeart />
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
       <Container>
         <MasonryInfiniteGrid gap={8} isConstantSize={true} column={2}>
-          {pop?.pages.map((page) =>
-            page.data.response.popularPosts.map((post) => {
+          {pop.pages.map((page, pageIndex) =>
+            page.data.response.popularPosts.map((post, postIndex) => {
               return (
                 <Card
-                  layoutId={"pop" + post.postId}
-                  key={post.postId}
+                  key={`${pageIndex}${postIndex}`}
                   level={post.postLevel}
-                  image={post.imageUri}
+                  image={post.imageUrl}
                   onClick={() => handleCardClick(post.postId)}
                 />
               );
@@ -104,10 +122,16 @@ const PopPage = () => {
           <>
             <Overlay
               onClick={handleOverlayClick}
+              initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             />
-            <Detail layoutId={"pop" + detailMatch.params.postId}>
+            <Detail
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0 }}
+              transition={{ duration: 0.3 }}
+            >
               <PopDetailPage />
             </Detail>
           </>

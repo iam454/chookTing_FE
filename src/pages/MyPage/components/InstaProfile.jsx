@@ -5,7 +5,7 @@ import Text from "./Text";
 import { Modal } from "../../../components/Modal";
 import theme from "../../../theme";
 import ModalButton from "../../../components/ModalButton";
-import { INSTAGRAM_AUTH_URL } from "../../../auth/instagram/auth";
+import { handleInstagramLogin } from "../../../utils/handleInstagramLogin";
 
 const Profile = styled.div`
   padding: 8px 0;
@@ -35,13 +35,10 @@ const InstaButton = styled.button`
   background-color: transparent;
   color: ${(props) => props.theme.white};
   padding: 0;
-  font-family: "Pretendard Variable", Pretendard, -apple-system,
-    BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI",
-    "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji",
-    "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+  cursor: ${(props) => (props.$isLinked ? "default" : "pointer")};
 `;
 
-const InstaProfile = ({ isLinked, infos }) => {
+const InstaProfile = ({ isLinked, infos, fireworks }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleButtonClick = () => {
@@ -50,18 +47,22 @@ const InstaProfile = ({ isLinked, infos }) => {
     }
   };
 
-  const handleInstagramConnection = () => {
-    window.location.href = INSTAGRAM_AUTH_URL;
-  };
-
   return (
     <Profile>
       <Text>포토카드에 SNS 계정을 연결해서 공유해 보세요.</Text>
-      <InstaButton onClick={handleButtonClick}>
-        <Icon src="/icons/instagram.png" $isLinked={isLinked} />
+      <InstaButton
+        onClick={handleButtonClick}
+        $isLinked={isLinked}
+        title="Connect instagram"
+      >
+        <Icon
+          src="/icons/instagram.png"
+          alt="인스타그램"
+          $isLinked={isLinked}
+        />
         <Text>{isLinked ? "연결 완료" : "연결하기"}</Text>
       </InstaButton>
-      <MyInfos isLinked={isLinked} infos={infos} />
+      <MyInfos isLinked={isLinked} fireworks={fireworks} infos={infos} />
       <Modal.Long
         isOpen={isModalOpen}
         onRequestClose={() => setIsModalOpen(false)}
@@ -70,7 +71,7 @@ const InstaProfile = ({ isLinked, infos }) => {
       >
         <ModalButton
           isLong
-          onClick={handleInstagramConnection}
+          onClick={handleInstagramLogin}
           iconSrc="/icons/instagram.png"
           bgColor={theme.pink}
           text="인스타그램 연결하기"

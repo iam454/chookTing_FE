@@ -1,16 +1,14 @@
 import React, { useRef, useState } from "react";
 import Layout from "../../components/Layout";
-// import { SkeletonPage } from "../SkeletonPage/SkeletonPage";
+import { SkeletonPage } from "../SkeletonPage/SkeletonPage";
 import Post from "../../components/Post";
 import PostInfos from "../../components/PostInfos";
-
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import "swiper/css";
 import styled from "styled-components";
 import { motion, useAnimation } from "framer-motion";
-
-import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { fetchHomePosts } from "../../apis/api/post";
 
 const swiperStyle = {
@@ -55,7 +53,29 @@ const HomePage = () => {
   const progressBarRef = useRef();
   const pauseAnimation = useAnimation();
   const resumeAnimation = useAnimation();
-  const { data: home } = useQuery(["posts"], fetchHomePosts);
+  const {
+    isLoading,
+    data: home,
+    fetchNextPage,
+    refetch,
+  } = useInfiniteQuery(
+    ["posts"],
+    ({ pageParam = 0 }) => fetchHomePosts(pageParam),
+    {
+      getNextPageParam: (lastPage, allPages) => {
+        const {
+          data: {
+            response: { hasNext, lastPostId },
+          },
+        } = lastPage;
+        return hasNext ? lastPostId : 0;
+      },
+      onError: () => {
+        alert("네트워크 연결이 불안정합니다.");
+        refetch();
+      },
+    }
+  );
 
   let clickTimer = null;
 
@@ -93,6 +113,14 @@ const HomePage = () => {
     swiperRef.autoplay.pause();
     setIsPlaying(false);
   };
+
+  if (isLoading) {
+    return (
+      <Layout>
+        <SkeletonPage.Home />
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
@@ -137,24 +165,25 @@ const HomePage = () => {
         autoplay={{ delay: 5000, disableOnInteraction: false }}
         onAutoplayTimeLeft={handleProgessBarPaint}
         onSwiper={setSwiperRef}
-        loop
+        onReachEnd={fetchNextPage}
       >
-        {home?.data.response.postList.map((post) => {
-          return (
-            <SwiperSlide key={post.postId} onClick={handleSwiperClick}>
-              <Post.Home
-                image={post.imageUri}
-                info={
-                  <PostInfos name={post.nickname} hashtags={post.hashTags} />
-                }
-                id={post.postId}
-                // isLikedPost={post.isLiked}
-                points={post.postPoint}
-                handleAutoPlayPause={handleAutoPlayPause}
-              />
-            </SwiperSlide>
-          );
-        })}
+        {home.pages.map((page) =>
+          page.data.response.postList.map((post) => {
+            return (
+              <SwiperSlide key={post.postId} onClick={handleSwiperClick}>
+                <Post.Home
+                  image={post.imageUri}
+                  info={
+                    <PostInfos name={post.nickname} hashtags={post.hashTags} />
+                  }
+                  id={post.postId}
+                  isLikedPost={post.isLiked}
+                  handleAutoPlayPause={handleAutoPlayPause}
+                />
+              </SwiperSlide>
+            );
+          })
+        )}
         <ProgressBar viewBox="0 0 100 1" ref={progressBarRef}>
           <line x1="0" y1="1" x2="100" y2="1" />
         </ProgressBar>

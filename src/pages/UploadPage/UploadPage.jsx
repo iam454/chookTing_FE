@@ -5,7 +5,7 @@ import ModalButton from "../../components/ModalButton";
 import theme from "../../theme";
 import Post from "../../components/Post";
 import PostInfos from "../../components/PostInfos";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import uploadFileState from "../../recoil/uploadImage/atom";
 import { useNavigate } from "react-router-dom";
 import uploadContentsState from "../../recoil/uploadContents/atom";
@@ -38,10 +38,6 @@ const InputBox = styled.form`
 `;
 
 const Input = styled.input`
-  font-family: "Pretendard Variable", Pretendard, -apple-system,
-    BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI",
-    "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji",
-    "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
   width: 100%;
   height: 44px;
   padding: 12px;
@@ -71,8 +67,7 @@ const isEmptyValue = (value) => {
 
 const UploadPage = () => {
   const [uploadFile, setUploadFile] = useRecoilState(uploadFileState);
-  const [uploadContents, setUploadContents] =
-    useRecoilState(uploadContentsState);
+  const setUploadContents = useSetRecoilState(uploadContentsState);
   const [name, setName] = useState("");
   const [inputHashtag, setInputHashtag] = useState("");
   const [hashtags, setHashtags] = useState([]);
@@ -82,7 +77,6 @@ const UploadPage = () => {
       navigate("/upload-done");
     },
     onError: (e) => {
-      console.log("error", e);
       alert("업로드에 실패하였습니다.");
     },
   });
@@ -168,7 +162,7 @@ const UploadPage = () => {
   const handleUploadClick = (e) => {
     e.preventDefault();
     if (!name) {
-      // 닉네임은 필수항목입니다. - 사용자가 알아챌 수 있도록
+      alert("닉네임을 입력해주세요.");
       return;
     }
     setUploadContents({ name: name.trim(), hashtags });

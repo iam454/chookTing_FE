@@ -11,6 +11,7 @@ const Layout = styled(motion.div)`
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
 `;
 
 const Container = styled.div`
@@ -73,7 +74,7 @@ const Card = ({ photo, layoutId, onClick }) => {
   return (
     <Layout layoutId={layoutId} onClick={onClick}>
       <Container>
-        <Image src={`${process.env.REACT_APP_IMAGE_BASE_URL}${imageUri}`} />
+        <Image src={imageUri} alt="네컷사진" />
         <Description>
           <Name>{nickname}</Name>
           <Date>{createdAt}</Date>

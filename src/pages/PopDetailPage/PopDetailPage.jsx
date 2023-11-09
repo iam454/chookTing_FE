@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Post from "../../components/Post";
 import PostInfos from "../../components/PostInfos";
 import { useQuery } from "@tanstack/react-query";
@@ -19,6 +19,7 @@ const PopDetailPage = () => {
       refetch();
       navigate("/pop");
     },
+    cacheTime: 0,
   });
 
   if (isLoading) {
@@ -27,7 +28,7 @@ const PopDetailPage = () => {
 
   return (
     <Post.Pop
-      image={popDetail.data.response.imageUri}
+      image={popDetail.data.response.imageUrl}
       info={
         <PostInfos
           name={popDetail.data.response.nickname}
@@ -35,9 +36,10 @@ const PopDetailPage = () => {
         />
       }
       id={popDetail.data.response.postId}
-      // isLikedPost={photo.isLiked}
+      isLikedPost={popDetail.data.response.isLiked}
       numberLikes={popDetail.data.response.likeCount}
       points={popDetail.data.response.postPoint}
+      level={popDetail.data.response.postLevel}
     />
   );
 };

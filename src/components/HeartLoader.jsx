@@ -45,8 +45,22 @@ const Heart = styled.div`
   }
 `;
 
-const HeartLoader = () => {
+const Container = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+`;
+
+export const AnimatedHeart = () => {
   return <Heart />;
 };
 
-export default HeartLoader;
+export const CenteredHeart = () => {
+  return (
+    <Container>
+      <Heart />
+    </Container>
+  );
+};

@@ -6,7 +6,7 @@ import ModalButton from "../../../components/ModalButton";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import uploadFileState from "../../../recoil/uploadImage/atom";
-import { INSTAGRAM_AUTH_URL } from "../../../auth/instagram/auth";
+import { handleInstagramLogin } from "../../../utils/handleInstagramLogin";
 
 const Layout = styled.div`
   width: 100%;
@@ -58,10 +58,6 @@ const UploadButton = ({ isLinked }) => {
     }
   }, [uploadFile, navigate]);
 
-  const handleInstagramConnection = () => {
-    window.location.href = INSTAGRAM_AUTH_URL;
-  };
-
   return (
     <Layout>
       <Label htmlFor="upload" onClick={handleLabelClick}>
@@ -101,7 +97,7 @@ const UploadButton = ({ isLinked }) => {
       >
         <ModalButton
           isLong
-          onClick={handleInstagramConnection}
+          onClick={handleInstagramLogin}
           iconSrc="/icons/instagram.png"
           bgColor={theme.pink}
           text="인스타그램 연결하기"

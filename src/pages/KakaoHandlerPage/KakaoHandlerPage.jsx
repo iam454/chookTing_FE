@@ -1,20 +1,11 @@
 import React, { useEffect } from "react";
-import Layout from "./Layout";
+import Layout from "../../components/Layout";
 import { useLocation, useNavigate } from "react-router-dom";
-import styled from "styled-components";
-import HeartLoader from "./HeartLoader";
-import { kakaoLogin } from "../apis/api/user";
+import { CenteredHeart } from "../../components/HeartLoader";
+import { kakaoLogin } from "../../apis/api/user";
 import { useMutation } from "@tanstack/react-query";
 
-const Container = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-`;
-
-const KakaoHandler = () => {
+const KakaoHandlerPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const code = new URLSearchParams(location.search).get("code");
@@ -23,6 +14,7 @@ const KakaoHandler = () => {
       const token = res.headers.authorization;
       localStorage.setItem("token", token);
       navigate("/");
+      window.location.reload();
     },
     onError: (e) => {
       console.log("카카오 로그인 실패", e);
@@ -36,11 +28,9 @@ const KakaoHandler = () => {
 
   return (
     <Layout>
-      <Container>
-        <HeartLoader />
-      </Container>
+      <CenteredHeart />
     </Layout>
   );
 };
 
-export default KakaoHandler;
+export default KakaoHandlerPage;

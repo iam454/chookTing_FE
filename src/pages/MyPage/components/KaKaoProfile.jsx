@@ -26,7 +26,7 @@ const Name = styled.span`
   font-size: 16px;
 `;
 
-const KaKaoProfile = ({ username, email, profileImage }) => {
+const KaKaoProfile = ({ username, profileImage }) => {
   const navigate = useNavigate();
 
   const handleSettingButtonClick = () => {
@@ -36,7 +36,7 @@ const KaKaoProfile = ({ username, email, profileImage }) => {
   return (
     <Profile>
       <SettingButton onClick={handleSettingButtonClick} />
-      <Image src={profileImage} />
+      <Image src={profileImage} alt="프로필 이미지" />
       <Name>{username}</Name>
     </Profile>
   );

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import Text from "./Text";
 import InfoModal from "./InfoModal";
+import { convertToK } from "../../../utils/convertToK";
 
 const List = styled.ul`
   width: 100%;
@@ -15,6 +16,7 @@ const Item = styled.li`
   justify-content: center;
   align-items: center;
   gap: 4px;
+  cursor: ${(props) => (props.$hasClickEvent ? "pointer" : "default")};
 `;
 
 const Number = styled.span`
@@ -22,22 +24,26 @@ const Number = styled.span`
   font-size: 20px;
 `;
 
-const MyInfos = ({ isLinked, infos }) => {
-  const { totalLikes, totalViews, fireworks } = infos;
+const MyInfos = ({ isLinked, fireworks, infos }) => {
+  const { totalLikes, totalViews } = { ...infos };
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <List>
       <Item>
-        <Number>{isLinked ? totalLikes || "-" : "-"}</Number>
+        <Number>
+          {isLinked ? (totalLikes && totalLikes.toLocaleString()) || "-" : "-"}
+        </Number>
         <Text>내가 받은 좋아요</Text>
       </Item>
       <Item>
-        <Number>{isLinked ? totalViews || "-" : "-"}</Number>
-        <Text>내가 받은 폭죽</Text>
+        <Number>
+          {isLinked ? (totalViews && totalViews.toLocaleString()) || "-" : "-"}
+        </Number>
+        <Text>내 SNS 방문자</Text>
       </Item>
-      <Item onClick={() => setIsModalOpen(true)}>
-        <Number>{isLinked ? fireworks || "-" : "-"}</Number>
+      <Item onClick={() => setIsModalOpen(true)} $hasClickEvent>
+        <Number>{fireworks ? convertToK(fireworks) : "-"}</Number>
         <Text>
           내 폭죽
           <svg

@@ -1,8 +1,7 @@
 import React from "react";
 import { styled } from "styled-components";
-import { motion } from "framer-motion";
 
-const Box = styled(motion.div)`
+const Box = styled.div`
   width: 175px;
   height: ${(props) => {
     switch (props.$level) {
@@ -19,6 +18,7 @@ const Box = styled(motion.div)`
   border-radius: 8px;
   overflow: hidden;
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  cursor: pointer;
 `;
 
 const Photo = styled.img`
@@ -27,10 +27,10 @@ const Photo = styled.img`
   object-fit: cover;
 `;
 
-const Card = ({ layoutId, level, image, onClick }) => {
+const Card = ({ level, image, onClick }) => {
   return (
-    <Box layoutId={layoutId} $level={level} onClick={onClick}>
-      <Photo src={`${process.env.REACT_APP_IMAGE_BASE_URL}${image}`} />
+    <Box $level={level} onClick={onClick}>
+      <Photo src={image} alt="네컷사진" />
     </Box>
   );
 };
