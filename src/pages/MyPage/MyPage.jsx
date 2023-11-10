@@ -65,6 +65,7 @@ const MyPage = () => {
       alert("사용자 정보를 찾을 수 없습니다. 다시 로그인해주세요.");
       localStorage.removeItem("token");
       navigate("/");
+      window.location.reload();
     },
     cacheTime: 0,
   });
