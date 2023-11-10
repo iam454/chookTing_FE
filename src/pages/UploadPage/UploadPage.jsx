@@ -73,10 +73,10 @@ const UploadPage = () => {
   const [hashtags, setHashtags] = useState([]);
   const navigate = useNavigate();
   const { mutate } = useMutation(createPost, {
-    onSuccess: (e) => {
+    onSuccess: () => {
       navigate("/upload-done");
     },
-    onError: (e) => {
+    onError: () => {
       alert("업로드에 실패하였습니다.");
     },
   });

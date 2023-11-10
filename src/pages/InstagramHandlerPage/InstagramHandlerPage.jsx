@@ -15,7 +15,8 @@ const InstagramHandlerPage = () => {
       localStorage.setItem("token", token);
       navigate("/profile");
     },
-    onError: (e) => {
+    onError: () => {
+      alert("인스타 연결에 실패했습니다. 다시 시도해주세요.");
       navigate("/profile");
     },
   });
