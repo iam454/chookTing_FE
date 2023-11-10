@@ -63,7 +63,7 @@ const MyPage = () => {
   } = useQuery(["userInfos"], fetchUserInfos, {
     onError: () => {
       alert("사용자 정보를 찾을 수 없습니다.");
-      refetchUserInfos();
+      localStorage.removeItem("token");
       navigate("/");
     },
     cacheTime: 0,
