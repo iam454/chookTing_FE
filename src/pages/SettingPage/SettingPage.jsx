@@ -63,8 +63,8 @@ const SettingPage = () => {
       navigate("/");
       window.location.reload();
     },
-    onError: (e) => {
-      console.log("로그아웃 실패", e);
+    onError: () => {
+      alert("로그아웃에 실패했습니다. 다시 시도해주세요.");
     },
   });
   const { mutate: quit } = useMutation(deleteUser, {
@@ -73,8 +73,8 @@ const SettingPage = () => {
       navigate("/");
       window.location.reload();
     },
-    onError: (e) => {
-      console.log("탈퇴 실패", e);
+    onError: () => {
+      alert("회원탈퇴에 실패했습니다. 다시 시도해주세요.");
     },
   });
 
